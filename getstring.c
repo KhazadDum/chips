@@ -1,23 +1,26 @@
-int GetResult(char* str,int size)
+char* GetString(void)
 {
-    ParsRes result = ParsingMathExpr(str,size);
-    switch (result){
-        case PARS_BAD_SYM:
-            printf("В выражении находятся недопустимые символы.\n");
-            return INCORRECT_RES;
-        case PARS_BRACK:
-            printf("Неверная вложенность скобок.\n");
-            return INCORRECT_RES;
-        case PARS_INCORRECT:
-            printf("Выражение составлено не верно!\n");
-            return INCORRECT_RES;
-        case PARS_NO_OPERANDS:
-            printf("Вы выражении отсуствуют числа!\n");
-            return INCORRECT_RES;
-        default: printf("Выражение составлено верно!:)\n");
-    }
-    PNode root = MakeTreeSyntaxParsing(str,0,size);
-    int res_expr = CalculationTree(root);
-    DestroyTree(root);
-    return res_expr;
+	size_t size = 2; // размер буффера
+	unsigned char num = size; // максимальное количество символов считываемых в буффер
+	unsigned int len = 0; // длина от начала строки
+	char *buffer = (char*)malloc(size*sizeof(char)); // выделяем память под буффер
+	if(!buffer) return NULL; // если выделить память не удалось возвращаем NULL
+	char *string = buffer;
+	char *temp = string; // для проверки результата функции realloc
+	while(fgets(buffer,num,stdin))
+	{
+		len+=strlen(buffer);
+		if(string[len-1]=='\n') // ну, собственно строкой мы считаем все до перевода строки
+		{
+			string[len-1] = '\0'; // \n нам ни к чему
+			return string;
+		}
+		size+=num;
+		temp = (char*)realloc(string,sizeof(char)*size); // перераспределяем блок памяти
+		if(!temp) break; // если перераспределить блок памяти не удалось - выходим
+		string = temp; // так как фукция realloc может нам вернуть указатель на другой блок памяти
+		buffer = string+len; // смещаем указатель буффера
+	}
+	free(string);
+	return NULL;
 }
