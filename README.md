@@ -1,3 +1,4 @@
 # chips
-My workpieces\n
+My workpieces
+
 Rednecks code
